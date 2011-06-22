@@ -1,16 +1,6 @@
 require 'spec_helper'
 require 'radian6'
 
-# Specs in this file have access to a helper object that includes
-# the HomeHelper. For example:
-#
-# describe HomeHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       helper.concat_strings("this","that").should == "this that"
-#     end
-#   end
-# end
 describe Radian6::API do
   before do
     stub_request(:get, "http://api.radian6.com/socialcloud/v1/auth/authenticate").
