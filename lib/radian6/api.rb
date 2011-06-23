@@ -40,9 +40,7 @@ module Radian6
   
     def fetchRangeTopicPosts(range_start,range_end,topics=[62727],media=[1,2,4,5,8,9,10,11,12,13,16],start_page=0,page_size=1000,dump_file=false)
       # BEWARE: range_start and range_end should be UNIX epochs in milliseconds, not seconds
-      path = "data/topicdata/range/#{range_start}/#{range_end}/#{topics.join(',')}/#{media.join(',')}/#{start_page}/#{page_size}"
-      log "\tGetting page #{start_page} for range #{range_start} to #{range_end} at #{Time.now}"
-      xml = api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token }) 
+      xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, start_page, page_size)
       
       if dump_file
         log "\tDumping to file #{dump_file} at #{Time.now}"
@@ -59,6 +57,28 @@ module Radian6
       else
         return Radian6::Post.from_xml(xml)
       end
+    end
+    
+    def fetchRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], start_page=0, page_size=1000)
+      # BEWARE: range_start and range_end should be UNIX epochs in milliseconds, not seconds
+      path = "data/topicdata/range/#{range_start}/#{range_end}/#{topics.join(',')}/#{media.join(',')}/#{start_page}/#{page_size}"
+      log "\tGetting page #{start_page} for range #{range_start} to #{range_end} at #{Time.now}"
+      return api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
+    end
+    
+    def eachRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], page_size=1000)
+      page = 0
+      begin
+        xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, page, page_size)
+        
+        yield xml
+        
+        doc = Nokogiri::XML(xml)
+        article_count = doc.xpath('//article_count').text.to_i
+        total_count = doc.xpath('//total_article_count').text.to_i
+        fetched_article_count = page * page_size + article_count
+        page += 1
+      end while total_count > fetched_article_count
     end
   
     protected
