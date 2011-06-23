@@ -26,7 +26,7 @@ describe Radian6::API do
     end
     
     it "should return a list of topics" do
-      stub_request(:get, "http://api.radian6.com/socialcloud/v1/topics").
+      stub_request(:get, /.*api.radian6.com.+/).
         to_return(:status => 200, :body => topics_xml)
       
       topics = @r6.topics
@@ -61,7 +61,7 @@ describe Radian6::API do
       end
       
       it "should return a list of recent posts" do
-        stub_request(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/recent/1/123456/1/0/1000").
+        stub_request(:get, /.*api.radian6.com.+/).
           to_return(:status => 200, :body => recent_xml)
         
         posts = @r6.fetchRecentTopicPosts 1, @topics, [1]
@@ -84,26 +84,24 @@ describe Radian6::API do
       end
       
       it "should return an XML representing posts in a range" do
-        range_url = "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/0/1000"
-        stub_request(:get, range_url).
+        stub_request(:get, /.*api.radian6.com.+/).
           to_return(:status => 200, :body => range_xml)
         
         posts = @r6.fetchRangeTopicPostsXML "1308738914000", "1308738964000", @topics, [1]
         
-        WebMock.should have_requested(:get, range_url).
+        WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/0/1000").
           with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
         
         posts.should == range_xml
       end
       
       it "should return a list of posts in a range" do
-        range_url = "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/0/1000"
-        stub_request(:get, range_url).
+        stub_request(:get, /.*api.radian6.com.+/).
           to_return(:status => 200, :body => range_xml)
         
         posts = @r6.fetchRangeTopicPosts "1308738914000", "1308738964000", @topics, [1]
         
-        WebMock.should have_requested(:get, range_url).
+        WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/0/1000").
           with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
         
         posts.length.should == 2
