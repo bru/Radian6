@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'webmock/rspec'
+require 'socializer/cassandra_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -25,4 +26,14 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   # config.use_transactional_fixtures = true
+  
+  config.before(:suite) do
+    
+  end
+  
+  config.after(:each) do
+    # TODO move initialization to before(:suite)
+    cassandra = Socializer::CassandraHelper.get_for_env(ENV["RAILS_ENV"])
+    cassandra.clear_keyspace!
+  end
 end
