@@ -126,13 +126,15 @@ describe Radian6::API do
             to_return(:status => 200, :body => pages_xml(3, 20))
 
           counter = 0
-          @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 20) do |xml|
+          @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 20) do |page, xml|
             WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/20").
               with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
 
             if counter == 0
+              page.should == 0
               xml.should == pages_xml(10, 20)
             else
+              page.should == 1
               xml.should == pages_xml(3, 20)
             end
             counter += 1
@@ -148,10 +150,11 @@ describe Radian6::API do
             to_return(:status => 200, :body => pages_xml(10, 10))
 
           counter = 0
-          @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 10) do |xml|
+          @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 10) do |page, xml|
             WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/10").
               with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
 
+            page.should == 0
             xml.should == pages_xml(10, 10)
             counter += 1
           end
@@ -166,10 +169,11 @@ describe Radian6::API do
             to_return(:status => 200, :body => pages_xml(0, 0))
 
           counter = 0
-          @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 20) do |xml|
+          @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 20) do |page, xml|
             WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/20").
               with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
-
+            
+            page.should == 0
             xml.should == pages_xml(0, 0)
             counter += 1
           end

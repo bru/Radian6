@@ -71,7 +71,7 @@ module Radian6
       begin
         xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, page, page_size)
         
-        yield xml
+        yield page, xml
         
         doc = Nokogiri::XML(xml)
         article_count = doc.xpath('//article_count').text.to_i
