@@ -9,11 +9,12 @@ require 'digest/md5'
 module Radian6
   class API
     attr_reader :auth_appkey, :auth_token
-    def initialize(username, password, app_key, sandbox=false, debug=false)
+    def initialize(username, password, app_key, opts={})
       @auth_appkey = app_key
-      @debug = debug
-    
-      if sandbox
+      opts = { :sandbox => false, :debug => false, :async => false }.merge(opts)
+      @debug = opts[:debug]
+      @async = opts[:async]
+      if opts[:sandbox]
         @endpoint = "http://devapi.radian6.com/socialcloud/v1/"
       else
         @endpoint = "http://api.radian6.com/socialcloud/v1/"
@@ -63,7 +64,8 @@ module Radian6
       # BEWARE: range_start and range_end should be UNIX epochs in milliseconds, not seconds
       path = "data/topicdata/range/#{range_start}/#{range_end}/#{topics.join(',')}/#{media.join(',')}/#{start_page}/#{page_size}"
       log "\tGetting page #{start_page} for range #{range_start} to #{range_end} at #{Time.now}"
-      return api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
+      xml = api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
+      return xml
     end
     
     def eachRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], page_size=1000)
@@ -94,8 +96,29 @@ module Radian6
       puts "LOG:" + string if @debug
     end
   
-    def api_get(method, args={})
-          
+    def api_get(method, headers={})
+      if @async
+        get_async(method, headers)
+      else
+        get_sync(method, headers)
+      end
+    end
+
+    def get_async(method, headers={})
+      options = { 
+        :connect_timeout => 3600,
+        :inactivity_timeout => 3600,
+      }
+
+      unless method == "auth/authenticate"
+        headers['auth_appkey'] = @auth_appkey
+        headers['auth_token']  = @auth_token
+      end
+      http = EventMachine::HttpRequest.new(@endpoint + method, options ).get :head => headers
+      http.response 
+    end
+
+    def get_sync(method, args={})
       unless method == "auth/authenticate"
         args['auth_appkey'] = @auth_appkey
         args['auth_token']  = @auth_token

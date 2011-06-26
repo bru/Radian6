@@ -10,7 +10,6 @@ describe Radian6::API do
   describe "initialization" do
     it "should authenticate user" do
       r6 = Radian6::API.new "username", "password", "123456789"
-      
       WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/auth/authenticate").
         with(:headers => {'Auth-Pass' => '5f4dcc3b5aa765d61d8327deb882cf99', 'Auth-User' => 'username'})
       
