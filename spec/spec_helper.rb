@@ -9,6 +9,8 @@ require 'socializer/cassandra_helper'
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
+DatabaseCleaner.strategy = :truncation
+
 RSpec.configure do |config|
   # == Mock Framework
   #
@@ -25,15 +27,34 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  # config.use_transactional_fixtures = true
-  
-  config.before(:suite) do
-    
+  config.use_transactional_fixtures = false
+
+  config.before :each do
+    DatabaseCleaner.start
+    DatabaseCleaner.clean
   end
-  
+
+  config.before(:suite) do
+  end
+
   config.after(:each) do
     # TODO move initialization to before(:suite)
     cassandra = Socializer::CassandraHelper.get_for_env(ENV["RAILS_ENV"])
     cassandra.clear_keyspace!
   end
 end
+
+def use_mock_ldap_server(login, password)
+  response = mock('ldap_response')
+  response.stub(:remove_connection).and_return(nil)
+
+  response.stub(:bind) do |pwd|
+    if pwd == password
+      true
+    else
+      raise ActiveLdap::AuthenticationError
+    end
+  end
+  LdapUser.stub(:find).with(@login).and_return(response)
+end
+
