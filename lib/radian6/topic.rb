@@ -8,14 +8,6 @@ module Radian6
       @id       = params[:id]
     end
 
-    def self.system_topics
-      # Replace with topic grabbing code!
-      t1 = new(:id => 1, :name => 'iPhone', :groups => 'Foos')
-      t2 = new(:id => 2, :name => 'Android', :groups => 'Bars')
-      t3 = new(:id => 3, :name => 'Nokia', :groups => 'Zoos')
-      [t1, t2, t3]
-    end
-
     def self.from_xml(xml)
       doc = Nokogiri::XML(xml)
       xml_topics = doc.root.xpath('//topicFilters/topicFilter')
