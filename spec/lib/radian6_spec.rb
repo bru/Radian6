@@ -119,27 +119,26 @@ describe Radian6::API do
       
       describe "when posts span multiple pages" do
         it "should loop over all the pages" do
-          stub_request(:get, /.*api.radian6.com.+\/0\/20/).
-            to_return(:status => 200, :body => pages_xml(10, 20))
-          stub_request(:get, /.*api.radian6.com.+\/1\/20/).
-            to_return(:status => 200, :body => pages_xml(3, 20))
+          stub_request(:get, /.*api.radian6.com.+\/[012]\/10/).
+            to_return(:status => 200, :body => pages_xml(10, 33))
+          stub_request(:get, /.*api.radian6.com.+\/3\/10/).
+            to_return(:status => 200, :body => pages_xml(3, 33))
 
           counter = 0
-          @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 20) do |page, xml|
-            WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/20").
+          @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 10) do |page, xml|
+            WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/10").
               with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
-
-            if counter == 0
-              page.should == 0
-              xml.should == pages_xml(10, 20)
+            
+            page.should == counter
+            if counter == 3
+              xml.should == pages_xml(3, 33)
             else
-              page.should == 1
-              xml.should == pages_xml(3, 20)
+              xml.should == pages_xml(10, 33)
             end
             counter += 1
           end
 
-          counter.should == 2
+          counter.should == 4
         end
       end
       
