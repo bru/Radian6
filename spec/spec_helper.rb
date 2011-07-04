@@ -46,17 +46,4 @@ RSpec.configure do |config|
   end
 end
 
-def use_mock_ldap_server(login, password)
-  response = mock('ldap_response')
-  response.stub(:remove_connection).and_return(nil)
-
-  response.stub(:bind) do |pwd|
-    if pwd == password
-      true
-    else
-      raise ActiveLdap::AuthenticationError
-    end
-  end
-  LdapUser.stub(:find).with(@login).and_return(response)
-end
-
+include Testing::Ldap
