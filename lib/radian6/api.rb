@@ -15,7 +15,7 @@ module Radian6
       @debug = opts[:debug]
       @async = opts[:async]
       if opts[:sandbox]
-        @endpoint = "http://devapi.radian6.com/socialcloud/v1/"
+        @endpoint = "http://sandboxapi.radian6.com/socialcloud/v1/"
       else
         @endpoint = "http://api.radian6.com/socialcloud/v1/"
       end
