@@ -35,6 +35,8 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
+    # Make sure we can connect to localhost, e.g. to talk with Solr
+    WebMock.disable_net_connect!(:allow_localhost => true)
   end
 
   config.after(:each) do
