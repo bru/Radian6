@@ -9,6 +9,9 @@ require 'rspec/rails'
 require 'webmock/rspec'
 require 'socializer/cassandra_helper'
 
+require 'testing/test_solr_server'
+require 'testing/solr_test_helper'
+
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
