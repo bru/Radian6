@@ -45,8 +45,6 @@ require 'testing/solr_test_helper'
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
-DatabaseCleaner.strategy = :truncation
-
 RSpec.configure do |config|
   # == Mock Framework
   #
@@ -65,10 +63,6 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
-  config.before :each do
-    DatabaseCleaner.start
-    DatabaseCleaner.clean
-  end
 
   config.before(:suite) do
     # Make sure we can connect to localhost, e.g. to talk with Solr
