@@ -83,3 +83,4 @@ RSpec.configure do |config|
 end
 
 include Testing::Ldap
+include Testing::LoginMethods
