@@ -28,11 +28,11 @@ module Radian6
       if (cache)
         xml = File.read('./fixtures/topics.xml')
       else
-        puts @auth_appkey.inspect
-        puts @auth_token.inspect
+        log("App Key: #{@auth_appkey.inspect}")
+        log("Auth Token: #{@auth_token.inspect}")
         xml = api_get( "topics", { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
       end
-      puts xml.inspect
+      log("Received XML\n#{xml.inspect}")
       return Radian6::Topic.from_xml(xml)
     end
   
@@ -89,17 +89,17 @@ module Radian6
     protected
   
     def authenticate(username, password) 
-      puts username.inspect
-      puts password.inspect
+      log("Username -> #{username.inspect}")
+      log("Password -> #{password.inspect}")
       md5_pass = Digest::MD5::hexdigest(password)
       xml = api_get("auth/authenticate", { 'auth_user' => username, 'auth_pass' => md5_pass})
-      puts xml.inspect
+      log("Received XML\n#{xml.inspect}")
       doc = Nokogiri::XML(xml)
       @auth_token = doc.xpath('//auth/token').text
     end
     
     def log(string)
-      puts "LOG:" + string if @debug
+      puts "#{self.class}: #{string}" if @debug
     end
   
     def api_get(method, headers={})
