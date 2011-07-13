@@ -36,7 +36,9 @@ SimpleCov.coverage_dir 'coverage/rspec'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'webmock/rspec'
+require 'socializer'
 require 'socializer/cassandra_helper'
+
 
 require 'testing/test_solr_server'
 require 'testing/solr_test_helper'
