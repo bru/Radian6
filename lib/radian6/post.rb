@@ -1,14 +1,16 @@
 module Radian6
   class Post
-    attr_accessor :username, :title, :created_at, :updated_at, :id, :body, :source, :permalink
+    attr_accessor :author, :avatar, :username, :title, :created_at, :updated_at, :id, :body, :source, :permalink
     
     def initialize(params)
-      @username = params[:username]
-      @title    = params[:title]
-      @id       = params[:id]
-      @body     = params[:body]
-      @source   = params[:source].downcase
-      @permalink= params[:permalink]
+      @username = params[:username] || ""
+      @title    = params[:title]    || ""
+      @id       = params[:id]       || ""
+      @body     = params[:body]     || ""
+      @source   = params[:source].downcase || ""
+      @permalink= params[:permalink]       || ""
+      @author   = params[:author]   || ""
+      @avatar   = params[:avatar]   || ""
       @created_at=params[:created_at]
       @updated_at=params[:updated_at]
     end
@@ -21,6 +23,8 @@ module Radian6
         post = self.new({
           :username    => xml_message.xpath('./description/author').text,
           :title       => xml_message.xpath('./description/headline').text,
+          :author      => xml_message.xpath('./description/author').text,
+          :avatar      => xml_message.xpath('./avatar').text,
           :created_at  => xml_message.xpath('./publish_date').text,
           :updated_at  => xml_message.xpath('./publish_date').text,
           :id          => xml_message.object_id,

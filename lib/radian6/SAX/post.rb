@@ -11,6 +11,8 @@ module Radian6
             :prefix => "radian6_RiverOfNews_export/article/", 
             :paths  => {'description/author'    => "username",
                         'description/headline'  => "title",
+                        'description/author'    => "author",
+                        'avatar'                => "avatar",
                         'publish_date'          => "created_at",
                         'description/content'   => "body",
                         'media_provider'        => "source",
