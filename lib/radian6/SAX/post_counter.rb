@@ -1,7 +1,7 @@
 module Radian6
   module SAX
     class PostCounter < Nokogiri::XML::SAX::Document
-      attr_reader :count, :total, :error
+      attr_reader :count, :total, :error, :last_timestamp
       def initialize
         @in_count = false
         @in_total = false
@@ -15,6 +15,8 @@ module Radian6
           @in_total = true
         when "error"
           @in_error = true
+        when "publish_date"
+          fetch_timestamp(attrs)
         end
       end
 
@@ -31,12 +33,16 @@ module Radian6
 
       def characters text
         if @in_count
-          @count = text
+          @count = text.to_i
         elsif @in_total
-          @total = text
+          @total = text.to_i
         elsif @in_error
           @error = text
         end
+      end
+
+      def fetch_timestamp(attrs = [])
+        @last_timestamp ||= attrs.select { |key, value| key == "epoch" }.first[1].to_i
       end
     end
   end

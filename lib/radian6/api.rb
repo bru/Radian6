@@ -76,12 +76,19 @@ module Radian6
       begin
         xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, page, page_size)
         
-        yield page, xml
-        
-        doc = Nokogiri::XML(xml)
-        article_count = doc.xpath('//article_count').text.to_i
-        total_count = doc.xpath('//total_article_count').text.to_i
-        fetched_article_count = page * page_size + article_count
+        # doc = Nokogiri::XML(xml)
+        # article_count = doc.xpath('//article_count').text.to_i
+        # total_count = doc.xpath('//total_article_count').text.to_i
+        # fetched_article_count = page * page_size + article_count
+        counter = Radian6::SAX::PostCounter.new
+        parser  = Nokogiri::XML::SAX::Parser.new(counter)
+        parser.parse(xml)
+        raise counter.error if counter.error
+        total_count = counter.total
+        fetched_article_count = page * page_size + counter.count
+
+        yield page, xml, counter
+
         page += 1
       end while total_count > fetched_article_count
     end
