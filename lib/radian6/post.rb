@@ -3,21 +3,21 @@ module Radian6
     attr_accessor :author, :avatar, :username, :title, :created_at, :updated_at, :id, :body, :source, :permalink
     
     def initialize(params)
+      params = {} unless params.is_a? Hash
       @username = params[:username] || ""
       @title    = params[:title]    || ""
       @id       = params[:id]       || ""
       @body     = params[:body]     || ""
-      @source   = params[:source].downcase || ""
+      @source   = params[:source].downcase || "" rescue ""
       @permalink= params[:permalink]       || ""
       @author   = params[:author]   || ""
       @avatar   = params[:avatar]   || ""
-      @created_at=params[:created_at]
-      @updated_at=params[:updated_at]
+      @created_at=params[:created_at]  || ""
+      @updated_at=params[:updated_at]  || ""
     end
     
     def self.from_xml(xml)
-      doc = Nokogiri::XML(xml)
-      xml_posts = doc.root.xpath('//article')
+      xml_posts = Nokogiri::XML(xml).root.xpath('//article') rescue []
       posts = []
       xml_posts.each_with_index do |xml_message, index|
         post = self.new({
