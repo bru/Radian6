@@ -19,11 +19,11 @@ module Radian6
       else
         @endpoint = "http://api.radian6.com/socialcloud/v1/"
       end
-      
+
       authenticate(username, password)
       return self
     end
-  
+
     def topics(cache=false)
       if (cache)
         xml = File.read('./fixtures/topics.xml')
@@ -35,17 +35,17 @@ module Radian6
       log("Received XML\n#{xml.inspect}")
       return Radian6::Topic.from_xml(xml)
     end
-  
+
     def fetchRecentTopicPosts(hours=1,topics=[62727],media=[1,2,4,5,8,9,10,11,12,13,16],start_page=0,page_size=1000,dump_file=false)
       path = "data/topicdata/recent/#{hours}/#{topics.join(',')}/#{media.join(',')}/#{start_page}/#{page_size}"
       xml = api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })     
       return Radian6::Post.from_xml(xml)
     end
-  
+
     def fetchRangeTopicPosts(range_start,range_end,topics=[62727],media=[1,2,4,5,8,9,10,11,12,13,16],start_page=0,page_size=1000,dump_file=false)
       # BEWARE: range_start and range_end should be UNIX epochs in milliseconds, not seconds
       xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, start_page, page_size)
-      
+
       if dump_file
         log "\tDumping to file #{dump_file} at #{Time.now}"
         f = File.new(dump_file, "w")
@@ -62,7 +62,7 @@ module Radian6
         return Radian6::Post.from_xml(xml)
       end
     end
-    
+
     def fetchRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], start_page=0, page_size=1000)
       # BEWARE: range_start and range_end should be UNIX epochs in milliseconds, not seconds
       path = "data/topicdata/range/#{range_start}/#{range_end}/#{topics.join(',')}/#{media.join(',')}/#{start_page}/#{page_size}"
@@ -70,16 +70,12 @@ module Radian6
       xml = api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
       return xml
     end
-    
+
     def eachRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], page_size=1000)
       page = 0
       begin
         xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, page, page_size)
-        
-        # doc = Nokogiri::XML(xml)
-        # article_count = doc.xpath('//article_count').text.to_i
-        # total_count = doc.xpath('//total_article_count').text.to_i
-        # fetched_article_count = page * page_size + article_count
+
         counter = Radian6::SAX::PostCounter.new
         parser  = Nokogiri::XML::SAX::Parser.new(counter)
         parser.parse(xml)
