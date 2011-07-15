@@ -3,14 +3,14 @@ module Radian6
     attr_accessor :name, :groups, :id
     
     def initialize(params)
-      @name = params[:name]
-      @groups   = params[:groups]
-      @id       = params[:id]
+      params = {} unless params.is_a? Hash
+      @name = params[:name] || ""
+      @groups   = params[:groups] || ""
+      @id       = params[:id] || ""
     end
 
     def self.from_xml(xml)
-      doc = Nokogiri::XML(xml)
-      xml_topics = doc.root.xpath('//topicFilters/topicFilter')
+      xml_topics = Nokogiri::XML(xml).root.xpath('//topicFilters/topicFilter') rescue []
       topics = []
       xml_topics.each_with_index do |xml_topic, index|
         groups = []
