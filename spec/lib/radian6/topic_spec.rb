@@ -35,6 +35,18 @@ describe Radian6::Topic do
           topic.is_a?(Radian6::Topic).should be true       
         end
       end
+      it "should create FilterGroups for each topic" do 
+        Radian6::Topic.from_xml(topics_xml).each do |topic| 
+          topic.groups.each{|group| group.is_a?(Radian6::FilterGroup).should be true}       
+        end
+      end
+      it "should create FilterQueries for each FilterGroup" do 
+        Radian6::Topic.from_xml(topics_xml).each do |topic| 
+          topic.groups.each do |group| 
+            group.queries.each{|query| query.is_a?(Radian6::FilterQuery).should be true}
+          end         
+        end
+      end
     end 
   end
   

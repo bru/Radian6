@@ -3,9 +3,10 @@ module Radian6
     attr_accessor :query, :isExcludeQuery, :id
     
     def initialize(params)
-      @isExcludeQuery = params[:isExcludeQuery]
-      @query   = params[:query]
-      @id       = params[:id]
+      params = {} unless params.is_a? Hash
+      @isExcludeQuery = params[:isExcludeQuery] || ''
+      @query   = params[:query] || ''
+      @id       = params[:id] || ''
     end
   end
 end

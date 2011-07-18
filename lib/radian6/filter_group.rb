@@ -3,9 +3,10 @@ module Radian6
     attr_accessor :name, :queries, :id
     
     def initialize(params)
-      @name = params[:name]
-      @queries   = params[:queries]
-      @id       = params[:id]
+      params = {} unless params.is_a? Hash
+      @name = params[:name] || ''
+      @queries   = params[:queries] || ''
+      @id       = params[:id] || ''
     end
   end
 end
