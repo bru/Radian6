@@ -41,10 +41,13 @@ require 'webmock/rspec'
 
 require 'testing/test_solr_server'
 require 'testing/solr_test_helper'
+require 'testing/socialcast_mock/mock'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+
+socialcast_mock = SocialcastMock::Mock.new
 
 RSpec.configure do |config|
   # == Mock Framework
@@ -69,6 +72,12 @@ RSpec.configure do |config|
     # Make sure we can connect to localhost, e.g. to talk with Solr
     WebMock.disable_net_connect!(:allow_localhost => true)
     Socializer::CassandraHelper.mock_connection!
+  end
+  
+  config.before(:each) do
+    @socialcast_mock = socialcast_mock
+    @socialcast_mock.clear!
+    @socialcast_mock.mock_calls
   end
 
   config.after(:each) do
