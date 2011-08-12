@@ -74,7 +74,7 @@ describe Radian6::API do
       
       it "should make the correct request" do
         @r6.fetchRangeTopicPostsXML "1308738914000", "1308738964000", @topics, [1]
-        WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/1/1000").
+        WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/1/1000?includeFullContent=1").
           with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
       end
       
@@ -101,7 +101,7 @@ describe Radian6::API do
 
           counter = 1
           @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 10) do |page, xml|
-            WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/10").
+            WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/10?includeFullContent=1").
               with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
 
             page.should == counter
@@ -123,7 +123,7 @@ describe Radian6::API do
 
           counter = 1
           @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 10) do |page, xml|
-            WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/10").
+            WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/10?includeFullContent=1").
               with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
             counter += 1
           end
@@ -137,7 +137,7 @@ describe Radian6::API do
 
            counter = 1
            @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 20) do |page, xml|
-             WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/20").
+             WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/20?includeFullContent=1").
                with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
 
              page.should == 1
