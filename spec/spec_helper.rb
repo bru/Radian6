@@ -82,7 +82,7 @@ RSpec.configure do |config|
 
   config.after(:each) do
     # TODO move initialization to before(:suite)
-    cassandra = Socializer::CassandraHelper.get_for_env(ENV["RAILS_ENV"])
+    cassandra = Socializer::CassandraHelper.connection
     cassandra.clear_keyspace!
   end
 end
