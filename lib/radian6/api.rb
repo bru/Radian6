@@ -63,7 +63,7 @@ module Radian6
       end
     end
 
-    def fetchRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], start_page=0, page_size=1000)
+    def fetchRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], start_page=1, page_size=1000)
       # BEWARE: range_start and range_end should be UNIX epochs in milliseconds, not seconds
       path = "data/topicdata/range/#{range_start}/#{range_end}/#{topics.join(',')}/#{media.join(',')}/#{start_page}/#{page_size}"
       log "\tGetting page #{start_page} for range #{range_start} to #{range_end} at #{Time.now}"
@@ -72,7 +72,8 @@ module Radian6
     end
 
     def eachRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], page_size=1000)
-      page = 0
+      page = 1
+      fetched_article_count = 0
       begin
         xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, page, page_size)
 
@@ -81,8 +82,7 @@ module Radian6
         parser.parse(xml)
         raise counter.error if counter.error
         total_count = counter.total
-        fetched_article_count = page * page_size + counter.count
-
+        fetched_article_count = (page -1) * page_size + counter.count
         yield page, xml, counter
 
         page += 1

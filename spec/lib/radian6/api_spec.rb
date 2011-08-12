@@ -74,7 +74,7 @@ describe Radian6::API do
       
       it "should make the correct request" do
         @r6.fetchRangeTopicPostsXML "1308738914000", "1308738964000", @topics, [1]
-        WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/0/1000").
+        WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/1/1000").
           with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
       end
       
@@ -94,18 +94,18 @@ describe Radian6::API do
       end
       context "when posts span multiple pages" do 
         it "should loop over all the pages" do
-          stub_request(:get, /.*api.radian6.com.+\/[012]\/10/).
+          stub_request(:get, /.*api.radian6.com.+\/[123]\/10/).
             to_return(:status => 200, :body => pages_xml(10, 33))
-          stub_request(:get, /.*api.radian6.com.+\/3\/10/).
+          stub_request(:get, /.*api.radian6.com.+\/4\/10/).
             to_return(:status => 200, :body => pages_xml(3, 33))
 
-          counter = 0
+          counter = 1
           @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 10) do |page, xml|
             WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/10").
               with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
 
             page.should == counter
-            if counter == 3
+            if counter == 4
               xml.should == pages_xml(3, 33)
             else
               xml.should == pages_xml(10, 33)
@@ -113,39 +113,39 @@ describe Radian6::API do
             counter += 1
           end
 
-          counter.should == 4
+          counter.should == 5
         end
       end
       context "when all posts fit in one page" do
         it "should make just one call" do
-          stub_request(:get, /.*api.radian6.com.+\/0\/10/).
+          stub_request(:get, /.*api.radian6.com.+\/1\/10/).
             to_return(:status => 200, :body => pages_xml(10, 10))
 
-          counter = 0
+          counter = 1
           @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 10) do |page, xml|
             WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/10").
               with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
             counter += 1
           end
-          counter.should == 1
+          counter.should == 2
         end
       end
       context "when there are no posts" do
          it "should loop just once" do
-           stub_request(:get, /.*api.radian6.com.+\/0\/20/).
+           stub_request(:get, /.*api.radian6.com.+\/1\/20/).
              to_return(:status => 200, :body => pages_xml(0, 0))
 
-           counter = 0
+           counter = 1
            @r6.eachRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1], 20) do |page, xml|
              WebMock.should have_requested(:get, "http://api.radian6.com/socialcloud/v1/data/topicdata/range/1308738914000/1308738964000/123456/1/#{counter}/20").
                with(:headers => {'Auth-Appkey' => '123456789', 'Auth-Token' => 'abcdefghi'})
 
-             page.should == 0
+             page.should == 1
              xml.should == pages_xml(0, 0)
              counter += 1
            end
 
-           counter.should == 1
+           counter.should == 2
          end
        end     
     end  
