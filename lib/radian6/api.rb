@@ -94,6 +94,12 @@ module Radian6
       api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
       puts xml
     end
+
+    def fetchInfluencerData(topics=[])
+      path = "data/influencerdata/#{topics.join(",")}/0/0/"
+      xml = api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
+      puts xml
+    end
   
     protected
   
