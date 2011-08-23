@@ -67,13 +67,13 @@ RSpec.configure do |config|
     # Make sure we can connect to localhost, e.g. to talk with Solr
     WebMock.disable_net_connect!(:allow_localhost => true)
     Socializer::CassandraHelper.mock_connection!
-    mock_socialcast_profile_response
   end
 
   config.before(:each) do
     @socialcast_mock = socialcast_mock
     @socialcast_mock.clear!
     @socialcast_mock.mock_calls
+    mock_socialcast_profile_response
   end
 
   config.after(:each) do
