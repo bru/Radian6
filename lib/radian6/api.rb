@@ -71,6 +71,12 @@ module Radian6
       return xml
     end
 
+    def fetchMediaTypes
+      path = "lookup/mediaproviders"
+      xml = api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
+      return xml
+    end
+
     def eachRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], page_size=1000)
       page = 1
       fetched_article_count = 0
