@@ -40,9 +40,6 @@ require 'rspec/mocks/standalone'
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-socialcast_mock = SocialcastMock::Mock.new
-
-include SocialcastMock::Profile
 
 RSpec.configure do |config|
   # == Mock Framework
@@ -70,10 +67,9 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    @socialcast_mock = socialcast_mock
+    @socialcast_mock = SocialcastMock::Mock.instance
     @socialcast_mock.clear!
     @socialcast_mock.mock_calls
-    mock_socialcast_profile_response
   end
 
   config.after(:each) do
