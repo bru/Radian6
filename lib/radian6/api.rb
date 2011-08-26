@@ -14,6 +14,7 @@ module Radian6
       opts = { :sandbox => false, :debug => false, :async => false }.merge(opts)
       @debug = opts[:debug]
       @async = opts[:async]
+      @proxy = opts[:proxy]
       if opts[:sandbox]
         @endpoint = "http://sandboxapi.radian6.com/socialcloud/v1/"
       else
@@ -137,6 +138,8 @@ module Radian6
         :inactivity_timeout => 3600,
       }
 
+      options[:proxy] = @proxy if @proxy
+
       unless method == "auth/authenticate"
         headers['auth_appkey'] = @auth_appkey
         headers['auth_token']  = @auth_token
@@ -152,8 +155,10 @@ module Radian6
       end
       url = URI.parse(@endpoint)
       log "GET #{@endpoint + method}"
+      
+      protocol = @proxy ? Net::HTTP::Proxy(@proxy[:host, @proxy[:port]) : Net::HTTP
     
-      res = Net::HTTP.start(url.host, url.port ) do |http|
+      res = protocol.start(url.host, url.port ) do |http|
         http.open_timeout = 3600
         http.read_timeout = 3600
         http.get(@endpoint + method, args)
