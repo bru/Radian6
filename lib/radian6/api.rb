@@ -158,7 +158,7 @@ module Radian6
       
       protocol = @proxy.nil? ? Net::HTTP : Net::HTTP::Proxy(@proxy.host, @proxy.port)
 
-      log "connecting to proxy on #{@proxy.host}, #{@proxy.port}"
+      log "connecting through proxy on #{@proxy.host}, #{@proxy.port}" unless @proxy.nil?
     
       res = protocol.start(url.host, url.port ) do |http|
         http.open_timeout = 3600
