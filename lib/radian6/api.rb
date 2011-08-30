@@ -153,15 +153,18 @@ module Radian6
         args['auth_appkey'] = @auth_appkey
         args['auth_token']  = @auth_token
       end
-      url = URI.parse(@endpoint)
-      log "GET #{@endpoint + method}"
+      url = URI.parse(@endpoint + method)
+      log "GET #{url.path}"
       
-      protocol = @proxy ? Net::HTTP::Proxy(@proxy[:host], @proxy[:port]) : Net::HTTP
+      protocol = @proxy.nil? ? Net::HTTP : Net::HTTP::Proxy(@proxy.host, @proxy.port)
+
+      log "connecting to proxy on #{@proxy.host}, #{@proxy.port}"
     
+      exit
       res = protocol.start(url.host, url.port ) do |http|
         http.open_timeout = 3600
         http.read_timeout = 3600
-        http.get(@endpoint + method, args)
+        http.get(url.path , args)
       end
       res.body # maybe handle errors too...
     end
