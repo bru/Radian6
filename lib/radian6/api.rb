@@ -160,7 +160,6 @@ module Radian6
 
       log "connecting to proxy on #{@proxy.host}, #{@proxy.port}"
     
-      exit
       res = protocol.start(url.host, url.port ) do |http|
         http.open_timeout = 3600
         http.read_timeout = 3600
