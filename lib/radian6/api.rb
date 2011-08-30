@@ -64,7 +64,7 @@ module Radian6
       end
     end
 
-    def fetchRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], start_page=1, page_size=1000)
+    def fetchRangeTopicPostsXML(range_start, range_end, topics=[], media=[1,2,4,5,8,9,10,11,12,13,16], start_page=1, page_size=1000)
       # BEWARE: range_start and range_end should be UNIX epochs in milliseconds, not seconds
       path = "data/topicdata/range/#{range_start}/#{range_end}/#{topics.join(',')}/#{media.join(',')}/#{start_page}/#{page_size}?includeFullContent=1"
       log "\tGetting page #{start_page} for range #{range_start} to #{range_end} at #{Time.now}"
@@ -153,7 +153,8 @@ module Radian6
         args['auth_appkey'] = @auth_appkey
         args['auth_token']  = @auth_token
       end
-      url = URI.parse(@endpoint + method)
+      path_and_query = @endpoint + method
+      url = URI.parse(path_and_query)
       log "GET #{url.path}"
       
       protocol = @proxy.nil? ? Net::HTTP : Net::HTTP::Proxy(@proxy.host, @proxy.port)
@@ -163,7 +164,7 @@ module Radian6
       res = protocol.start(url.host, url.port ) do |http|
         http.open_timeout = 3600
         http.read_timeout = 3600
-        http.get(url.path , args)
+        http.get(path_and_query, args)
       end
       res.body # maybe handle errors too...
     end

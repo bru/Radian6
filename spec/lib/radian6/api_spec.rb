@@ -80,7 +80,7 @@ describe Radian6::API do
       
       it "should not return radian6 posts" do
         Radian6::Post.should_not_receive(:from_xml)
-        @r6.fetchRangeTopicPostsXML(1, @topics, [1])
+        @r6.fetchRangeTopicPostsXML("1308738914000", "1308738964000", @topics, [1])
       end
       
       it "should return xml" do
