@@ -137,8 +137,7 @@ module Radian6
         :connect_timeout => 3600,
         :inactivity_timeout => 3600,
       }
-
-      options[:proxy] = @proxy if @proxy
+      options[:proxy] = { :host => @proxy.host, :port => @proxy.port } if @proxy
 
       unless method == "auth/authenticate"
         headers['auth_appkey'] = @auth_appkey
