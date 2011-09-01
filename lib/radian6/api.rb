@@ -154,15 +154,14 @@ module Radian6
       end
       
       url = URI.parse(@endpoint + method)
-      log " url is #{url.inspect}"
       
       protocol = @proxy.nil? ? Net::HTTP : Net::HTTP::Proxy(@proxy.host, @proxy.port)
 
       res = protocol.start(url.host, url.port ) do |http|
         http.open_timeout = 3600
         http.read_timeout = 3600
-        log "  GET #{url.path}"
-        http.get(url.path, args)
+        log "  GET #{url.request_uri}"
+        http.get(url.request_uri, args)
       end
       res.body # maybe handle errors too...
     end
