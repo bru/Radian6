@@ -99,13 +99,11 @@ module Radian6
     def fetchRangeConversationCloudData(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], segmentation=0)
       path = "data/tagclouddata/#{range_start}/#{range_end}/#{topics.join(',')}/#{media.join(',')}/#{segmentation}"
       api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
-      puts xml
     end
 
     def fetchInfluencerData(topics=[])
       path = "data/influencerdata/#{topics.join(",")}/0/0/"
-      xml = api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
-      puts xml
+      api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
     end
   
     protected
