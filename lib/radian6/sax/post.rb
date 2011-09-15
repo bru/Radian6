@@ -1,3 +1,5 @@
+require 'nokogiri'
+
 module Radian6
   module SAX
     class Post < Nokogiri::XML::SAX::Document
