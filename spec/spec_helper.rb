@@ -70,6 +70,8 @@ RSpec.configure do |config|
     @socialcast_mock = SocialcastMock::Mock.instance
     @socialcast_mock.clear!
     @socialcast_mock.mock_calls
+    
+    Rails.cache.clear
   end
 
   config.after(:each) do
