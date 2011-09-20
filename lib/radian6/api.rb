@@ -101,8 +101,8 @@ module Radian6
       api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
     end
 
-    def fetchInfluencerData(topics=[])
-      path = "data/influencerdata/#{topics.join(",")}/0/0/"
+    def fetchInfluencerData(topics=[], show_sentiment = 0, show_engagement = 0)
+      path = "data/influencerdata/#{topics.join(",")}/#{show_sentiment}/#{show_engagement}/"
       api_get(path, { 'auth_appkey' => @auth_appkey, 'auth_token' => @auth_token })
     end
   
