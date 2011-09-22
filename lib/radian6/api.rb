@@ -8,6 +8,7 @@ require 'digest/md5'
 
 module Radian6
   class API
+    class HarvestError < StandardError; end
     attr_reader :auth_appkey, :auth_token
     def initialize(username, password, app_key, opts={})
       @auth_appkey = app_key
@@ -81,6 +82,8 @@ module Radian6
     def eachRangeTopicPostsXML(range_start, range_end, topics=[62727], media=[1,2,4,5,8,9,10,11,12,13,16], page_size=1000)
       page = 1
       fetched_article_count = 0
+      botched = 0
+      total_count = 1
       begin
         xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, page, page_size)
 
@@ -93,6 +96,25 @@ module Radian6
         yield page, xml, counter
 
         page += 1
+        botched = 0
+      rescue => e
+        # TODO: rescue exceptions from malformed xml
+        # raise if botched > 5
+        # else log offending request and try again
+        botched += 1
+        if botched < 5
+          File.open(File.join(File.dirname(__FILE__), "..", "..", "log", 
+              "botched-#{range_start}-#{range_end}-#{topics.join(',')}-#{page}.#{Time.new}.error"), "w") do |f|
+            f.write("#{e.class}\n#{e.message}\n\n")
+            f.write("-----------------------------")
+            f.write("BACKTRACE:\n#{e.backtrace}\n")
+            f.write("-----------------------------")
+            f.write(xml)
+          end
+        else
+          raise HarvestError
+        end
+        raise counter.error if counter.error
       end while total_count > fetched_article_count
     end
 
