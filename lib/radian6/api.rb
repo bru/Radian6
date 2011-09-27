@@ -4,7 +4,7 @@ require 'nokogiri'
 require 'net/http'
 require 'uri'
 require 'digest/md5'
-
+require 'time'
 
 module Radian6
   class API
@@ -104,7 +104,7 @@ module Radian6
         botched += 1
         if botched < 5
           File.open(File.join(File.dirname(__FILE__), "..", "..", "log", 
-              "botched-#{range_start}-#{range_end}-#{topics.join(',')}-#{page}.#{Time.new}.error"), "w") do |f|
+              "botched-#{range_start}-#{range_end}-#{topics.join(',')}-#{page}.#{Time.new.iso8601}.log"), "w") do |f|
             f.write("#{e.class}\n#{e.message}\n\n")
             f.write("-----------------------------")
             f.write("BACKTRACE:\n#{e.backtrace}\n")
