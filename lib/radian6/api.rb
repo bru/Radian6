@@ -134,7 +134,10 @@ module Radian6
       log("Username -> #{username.inspect}")
       log("Password -> #{password.inspect}")
       md5_pass = Digest::MD5::hexdigest(password)
-      xml = api_get("auth/authenticate", { 'auth_user' => username, 'auth_pass' => md5_pass})
+      xml = api_get("auth/authenticate", 
+                    { 'auth_user' => username, 
+                      'auth_pass' => md5_pass,
+                      'auth_appkey' => @auth_appkey})
       log("Received XML\n#{xml.inspect}")
       doc = Nokogiri::XML(xml)
       @auth_token = doc.xpath('//auth/token').text
