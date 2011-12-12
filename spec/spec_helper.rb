@@ -63,6 +63,8 @@ RSpec.configure do |config|
   config.before(:suite) do
     # Make sure we can connect to localhost, e.g. to talk with Solr
     WebMock.disable_net_connect!(:allow_localhost => true)
+    
+    # Notice that commenting this line won't disable the mock if 'mock' is true in cassandra.yml
     Socializer::CassandraHelper.mock_connection!
   end
 
