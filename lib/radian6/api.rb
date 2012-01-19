@@ -85,12 +85,8 @@ module Radian6
       botched = 0
       total_count = 1
       begin
-        xml = fetchRangeTopicPostsXML(range_start, range_end, topics, media, page, page_size)
-
-        counter = Radian6::SAX::PostCounter.new
-        parser  = Nokogiri::XML::SAX::Parser.new(counter)
-        parser.parse(xml)
-        raise counter.error if counter.error
+        xml         = sanitize_xml( fetchRangeTopicPostsXML(range_start, range_end, topics, media, page, page_size) )
+        counter     = get_posts_counter_for(xml)
         total_count = counter.total
         fetched_article_count = (page -1) * page_size + counter.count
         yield page, xml, counter
@@ -129,6 +125,10 @@ module Radian6
     end
   
     protected
+
+    def sanitize_xml(xml)
+      xml.gsub(/\u0000/, '')
+    end
   
     def authenticate(username, password) 
       log("Username -> #{username.inspect}")
@@ -142,7 +142,15 @@ module Radian6
       doc = Nokogiri::XML(xml)
       @auth_token = doc.xpath('//auth/token').text
     end
-    
+
+    def get_posts_counter_for(xml)
+        counter = Radian6::SAX::PostCounter.new
+        parser  = Nokogiri::XML::SAX::Parser.new(counter)
+        parser.parse(xml)
+        raise counter.error if counter.error
+        counter
+    end
+
     def log(string)
       puts "#{self.class}: #{string}" if @debug
     end
