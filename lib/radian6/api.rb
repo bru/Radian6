@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'active_support'
 require 'nokogiri'
 require 'net/http'
 require 'uri'
