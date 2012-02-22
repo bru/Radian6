@@ -98,16 +98,9 @@ module Radian6
         # else log offending request and try again
         botched += 1
         if botched < 5
-          File.open(File.join(File.dirname(__FILE__), "..", "..", "log", 
-              "botched-#{range_start}-#{range_end}-#{topics.join(',')}-#{page}.#{Time.new.iso8601}.log"), "w") do |f|
-            f.write("#{e.class}\n#{e.message}\n\n")
-            f.write("-----------------------------")
-            f.write("BACKTRACE:\n#{e.backtrace}\n")
-            f.write("-----------------------------")
-            f.write(xml)
-          end
+          # do nothing
         else
-          raise HarvestError
+          yield page, xml, counter, e
         end
         raise counter.error if counter.error
       end while total_count > fetched_article_count
