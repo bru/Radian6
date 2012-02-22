@@ -88,7 +88,7 @@ module Radian6
         counter     = get_posts_counter_for(xml)
         total_count = counter.total
         fetched_article_count = (page -1) * page_size + counter.count
-        yield page, xml, counter
+        yield page, xml, counter, nil
 
         page += 1
         botched = 0
