@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('yard')
   s.add_development_dependency('webmock')
   s.add_runtime_dependency('nokogiri', '>= 1.4.4')
+  s.add_runtime_dependency('em-http-request')
   s.authors = ["Riccardo Cambiassi"]
   s.description = %q{A Ruby wrapper for the Radian6 REST API}
   s.post_install_message =<<eos
