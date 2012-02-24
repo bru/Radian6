@@ -30,9 +30,9 @@ Feel free to help (see Contributing below)
 ## TODO
 
 * Clean up API class (maybe structuring the various calls in different "services" as suggested by the API documentation)
-* better support for object output (right now only Post and Topic are
-  supported)
+* better coverage for object output (right now only Post and Topic are supported)
 * remove the option to generate objects from xml as it's too slow and hogs the memory when dealing with big pages.
+* remove async connection option and isolate it via a Connector class interface
 
 ## Contributing to the code (a.k.a. submitting a pull request)
 
