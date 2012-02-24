@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'nokogiri'
 require 'net/http'
+require 'em-http-request'
 require 'uri'
 require 'digest/md5'
 require 'time'
@@ -88,21 +89,10 @@ module Radian6
         counter     = get_posts_counter_for(xml)
         total_count = counter.total
         fetched_article_count = (page -1) * page_size + counter.count
-        yield page, xml, counter, nil
+
+        yield page, xml, counter
 
         page += 1
-        botched = 0
-      rescue => e
-        # TODO: rescue exceptions from malformed xml
-        # raise if botched > 5
-        # else log offending request and try again
-        botched += 1
-        if botched < 5
-          # do nothing
-        else
-          yield page, xml, counter, e
-        end
-        raise counter.error if counter.error
       end while total_count > fetched_article_count
     end
 
@@ -167,7 +157,7 @@ module Radian6
         headers['auth_token']  = @auth_token
       end
       http = EventMachine::HttpRequest.new(@endpoint + method, options ).get :head => headers
-      http.response 
+      http.response
     end
 
     def get_sync(method, args={})
