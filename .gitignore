@@ -3,3 +3,4 @@
 .DS_Store
 *.tmproj
 .*swp
+Gemfile.lock
